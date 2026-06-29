@@ -3,11 +3,12 @@ import HotkeyKit
 /// Built-in default shortcuts for the two recording modes plus merge logic for
 /// user overrides. Pure + testable (mirrors KeyLightCore's BindingStore).
 ///
-/// Key codes: ANSI "5" == 23, Esc == 53. `repeatsOnHold` is false so holding a
-/// shortcut doesn't re-trigger start/stop.
+/// Key codes: ANSI "5" == 23, "6" == 22, Esc == 53. `repeatsOnHold` is false so
+/// holding a shortcut doesn't re-trigger start/stop.
 public enum BindingStore {
-    /// The user-reassignable bindings, in display order. ⌘⇧5 overrides the
-    /// native Screenshot shortcut; ⌘⌥⇧5 adds Option for region recording.
+    /// The user-reassignable bindings, in display order. ⌘⇧5 records the whole
+    /// display; ⌘⇧6 records a drag-selected region. Both override the native
+    /// Screenshot shortcuts (the tap swallows them so Screenshot never appears).
     public static let defaults: [Binding] = [
         Binding(
             token: RecordingMode.fullScreen.token,
@@ -16,7 +17,7 @@ public enum BindingStore {
         ),
         Binding(
             token: RecordingMode.region.token,
-            trigger: .key(23, [.command, .option, .shift]),
+            trigger: .key(22, [.command, .shift]),
             repeatsOnHold: false
         ),
     ]

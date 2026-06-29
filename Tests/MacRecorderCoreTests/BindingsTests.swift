@@ -10,8 +10,8 @@ final class BindingsTests: XCTestCase {
 
     func testDefaultTriggers() {
         let byToken = Dictionary(uniqueKeysWithValues: BindingStore.defaults.map { ($0.token, $0.trigger) })
-        XCTAssertEqual(byToken[RecordingMode.fullScreen.token], .key(23, [.command, .shift]))
-        XCTAssertEqual(byToken[RecordingMode.region.token], .key(23, [.command, .option, .shift]))
+        XCTAssertEqual(byToken[RecordingMode.fullScreen.token], .key(23, [.command, .shift]))      // ⌘⇧5
+        XCTAssertEqual(byToken[RecordingMode.region.token], .key(22, [.command, .shift]))          // ⌘⇧6
     }
 
     func testDefaultsDoNotRepeatOnHold() {
@@ -29,7 +29,7 @@ final class BindingsTests: XCTestCase {
         let byToken = Dictionary(uniqueKeysWithValues: resolved.map { ($0.token, $0.trigger) })
         XCTAssertEqual(byToken[RecordingMode.fullScreen.token], newTrigger)
         // The region binding is untouched.
-        XCTAssertEqual(byToken[RecordingMode.region.token], .key(23, [.command, .option, .shift]))
+        XCTAssertEqual(byToken[RecordingMode.region.token], .key(22, [.command, .shift]))
     }
 
     func testResolveIgnoresUnknownTokens() {

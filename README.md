@@ -15,7 +15,7 @@ menu-bar shell) and [HotkeyKit](https://github.com/nicholaspsmith/HotkeyKit)
 | Trigger (default) | Action |
 |-------------------|--------|
 | `⌘⇧5` | Start/stop recording the **whole main display** |
-| `⌘⌥⇧5` | Start a **drag-to-select region** recording (Esc cancels the picker) |
+| `⌘⇧6` | Start a **drag-to-select region** recording (Esc cancels the picker) |
 
 While recording, **stop** any of three ways: press the mode's shortcut again,
 press **Esc**, or **left-click the red menu-bar dot**. The finished `.mov` lands

@@ -29,7 +29,7 @@ First-run setup — two one-time permission grants:
 
 Use it:
   ⌘⇧5         start/stop recording the whole main display
-  ⌘⌥⇧5        start a drag-to-select region recording (Esc cancels the picker)
+  ⌘⇧6         start a drag-to-select region recording (Esc cancels the picker)
   While recording, stop via ⌘⇧5 again, Esc, or a left-click on the menu-bar dot.
   Finished recordings are saved straight to ~/Downloads (no preview).
 

@@ -8,7 +8,7 @@ import StatusItemKit
 ///
 /// Recording is a simple state machine:
 ///   idle ──(⌘⇧5)────────────────▶ recording
-///   idle ──(⌘⌥⇧5)──▶ selectingRegion ──(drag)──▶ recording
+///   idle ──(⌘⇧6)───▶ selectingRegion ──(drag)──▶ recording
 ///   recording ──(shortcut again / Esc / click dot)──▶ idle (file saved)
 ///
 /// ⌘⇧5 is swallowed by the tap so macOS's Screenshot tool never appears. Esc is

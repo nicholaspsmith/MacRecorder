@@ -36,7 +36,7 @@ shortcut:
 | Mode | Default shortcut | Behavior |
 |------|------------------|----------|
 | Record Entire Screen | ⌘⇧5 | Records the whole **main** display. |
-| Record Selected Area | ⌘⌥⇧5 | Drag a rectangle (crosshair overlay) to record just that region. Esc cancels the picker. |
+| Record Selected Area | ⌘⇧6 | Drag a rectangle (crosshair overlay) to record just that region. Esc cancels the picker. |
 
 Stop a recording three ways (all fixed): re-press the mode's shortcut (toggle),
 press **Esc**, or **left-click the menu-bar dot**. On stop the `.mov` is finalized
