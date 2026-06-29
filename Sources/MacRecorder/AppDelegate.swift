@@ -23,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var tap: HotkeyTap!
     private var trustTimer: Timer?
     private var state: State = .idle
+    private var prefs: PreferencesWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = RecorderStatusItem()
@@ -182,6 +183,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             menu.addItem(actionItem("⚠ Grant Accessibility…", #selector(grantAccessibility)))
         }
 
+        menu.addItem(actionItem("Preferences…", #selector(openPrefs), key: ","))
+
         let login = actionItem("Start at Login", #selector(toggleLogin))
         login.state = LoginItem.isEnabled ? .on : .off
         menu.addItem(login)
@@ -207,6 +210,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func menuRecordRegion() { if state == .idle { startRegion() } }
     @objc private func grantScreenRecording() { CGRequestScreenCaptureAccess() }
     @objc private func grantAccessibility() { tap.requestTrust(); startTapIfPossible() }
+
+    @objc private func openPrefs() {
+        if prefs == nil {
+            prefs = PreferencesWindowController(
+                model: model,
+                // Pause the tap during shortcut capture so the current ⌘⇧5 is
+                // recorded rather than starting a real recording; resume after.
+                pauseTap: { [weak self] in self?.tap.stop() },
+                resumeTap: { [weak self] in self?.startTapIfPossible() }
+            )
+        }
+        prefs?.show()
+    }
     @objc private func toggleLogin() { LoginItem.toggle() }
     @objc private func quit() { NSApp.terminate(nil) }
 }
