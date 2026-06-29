@@ -55,6 +55,9 @@ one-time grant; the menu shows a "⚠ Grant…" item until you do).
   output-path formatting).
 - `Sources/MacRecorder` — the app (recorder, region selector, status item,
   hotkeys, preferences).
+- `Resources/bundle/AppIcon.icns` — placeholder app icon (red record dot on a
+  dark squircle). Regenerate with `swift scripts/make-icon.swift`, or drop in
+  real artwork to replace it.
 - `docs/superpowers/specs/` — design spec.
 
 See [`docs/superpowers/specs/2026-06-29-macrecorder-design.md`](docs/superpowers/specs/2026-06-29-macrecorder-design.md)
