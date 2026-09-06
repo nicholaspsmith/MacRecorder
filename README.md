@@ -65,6 +65,10 @@ one-time grant; the menu shows a "⚠ Grant…" item until you do).
 See [`docs/superpowers/specs/2026-06-29-macrecorder-design.md`](docs/superpowers/specs/2026-06-29-macrecorder-design.md)
 for the full design.
 
+## Why not a SwiftBar plugin?
+
+This is a standalone `.app` built on [StatusItemKit](https://github.com/nicholaspsmith/StatusItemKit), not a script under a plugin host: no SwiftBar to install, a real AppKit menu instead of rendered stdout, event-driven updates instead of a re-run timer, and an icon that keeps its place in the bar. Recording the screen with system audio uses ScreenCaptureKit, and the global ⌘⇧5 hotkey comes from HotkeyKit's `CGEventTap`; neither is reachable from a plugin script. The full comparison is in [StatusItemKit's README](https://github.com/nicholaspsmith/StatusItemKit#why-not-swiftbar).
+
 ## The menu-bar suite
 
 Part of a suite of macOS menu-bar apps that share one framework, one
