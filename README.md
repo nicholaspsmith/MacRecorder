@@ -2,6 +2,8 @@
 
 <p align="center"><img src="docs/mascot.png" width="160" alt="MacRecorder mascot, from the Menubarn widget library"></p>
 
+<p align="center">Part of the <a href="https://widgets.nicksmith.software">Menubarn</a> widget library.</p>
+
 A tiny standalone macOS menu-bar app that records the screen **with system
 audio** — the one thing QuickTime's screen recording can't do — triggered by
 **⌘⇧5** (the shortcut macOS normally gives the Screenshot tool). Recordings are
