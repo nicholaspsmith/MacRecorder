@@ -28,6 +28,20 @@ final class RecorderStatusItem: NSObject {
         render()
     }
 
+    /// Camcorder mascot (red light while recording) or the plain record symbol.
+    enum IconStyle: String, CaseIterable {
+        case camcorder, symbol
+        var title: String { self == .camcorder ? "Camcorder" : "Symbol" }
+        private static let key = "iconStyle"
+        static var current: IconStyle {
+            get { UserDefaults.standard.string(forKey: key).flatMap(IconStyle.init) ?? .camcorder }
+            set { UserDefaults.standard.set(newValue.rawValue, forKey: key) }
+        }
+    }
+
+    /// Redraw after a style change.
+    func refresh() { render() }
+
     func setRecording(_ on: Bool) {
         guard recording != on else { return }
         recording = on
@@ -59,6 +73,10 @@ final class RecorderStatusItem: NSObject {
     private func render() {
         guard let button = statusItem.button else { return }
         button.imagePosition = .imageOnly
+        if IconStyle.current == .camcorder {
+            button.image = CharacterIcon.camcorder(recording: recording)
+            return
+        }
         if recording {
             // Solid red dot — a clear "REC" indicator, kept full-color.
             button.image = MeterIcon.dot(color: .systemRed)

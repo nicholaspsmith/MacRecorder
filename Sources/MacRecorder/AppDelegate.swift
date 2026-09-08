@@ -185,6 +185,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(actionItem("Preferences…", #selector(openPrefs), key: ","))
 
+        let iconHeader = NSMenuItem(title: "Icon", action: nil, keyEquivalent: "")
+        let iconSub = NSMenu()
+        for style in RecorderStatusItem.IconStyle.allCases {
+            let item = NSMenuItem(title: style.title, action: #selector(pickIconStyle(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = style.rawValue
+            item.state = style == RecorderStatusItem.IconStyle.current ? .on : .off
+            iconSub.addItem(item)
+        }
+        iconHeader.submenu = iconSub
+        menu.addItem(iconHeader)
+
         let login = actionItem("Start at Login", #selector(toggleLogin))
         login.state = LoginItem.isEnabled ? .on : .off
         menu.addItem(login)
@@ -223,6 +235,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         prefs?.show()
     }
+    @objc private func pickIconStyle(_ sender: NSMenuItem) {
+        guard let raw = sender.representedObject as? String, let style = RecorderStatusItem.IconStyle(rawValue: raw) else { return }
+        RecorderStatusItem.IconStyle.current = style
+        statusItem.refresh()
+    }
+
     @objc private func toggleLogin() { LoginItem.toggle() }
     @objc private func quit() { NSApp.terminate(nil) }
 }
