@@ -66,9 +66,15 @@ final class RecorderStatusItem: NSObject {
     private func showMenu() {
         let menu = NSMenu()
         buildMenu?(menu)
+        // Detach only once tracking ends; clearing the menu right after
+        // performClick closes it under itself when another app is frontmost.
+        var token: NSObjectProtocol?
+        token = NotificationCenter.default.addObserver(forName: NSMenu.didEndTrackingNotification, object: menu, queue: .main) { [weak self] _ in
+            if let token { NotificationCenter.default.removeObserver(token) }
+            self?.statusItem.menu = nil
+        }
         statusItem.menu = menu
         statusItem.button?.performClick(nil)
-        statusItem.menu = nil
     }
 
     private func render() {
