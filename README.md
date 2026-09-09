@@ -14,6 +14,13 @@ menu-bar shell) and [HotkeyKit](https://github.com/nicholaspsmith/HotkeyKit)
 (the global key-tap engine), the same way as
 [KeyLight](https://github.com/nicholaspsmith/keylight-menubar).
 
+## The menu-bar icon
+
+![The menu-bar icon](docs/menubar-icon.png)
+
+A camcorder; its record light comes on while a recording is running. Prefer the
+plain record-dot symbol? **menu ▸ Icon ▸ Symbol**.
+
 ## What it does
 
 | Trigger (default) | Action |
@@ -22,7 +29,7 @@ menu-bar shell) and [HotkeyKit](https://github.com/nicholaspsmith/HotkeyKit)
 | `⌘⇧6` | Start a **drag-to-select region** recording (Esc cancels the picker) |
 
 While recording, **stop** any of three ways: press the mode's shortcut again,
-press **Esc**, or **left-click the red menu-bar dot**. The finished `.mov` lands
+press **Esc**, or **left-click the camcorder in the menu bar**. The finished `.mov` lands
 in `~/Downloads` — no preview, no thumbnail.
 
 - **System audio only** — captured natively by ScreenCaptureKit. No microphone,
@@ -83,7 +90,7 @@ colour, and cooperative hiding so no icon strands another.
 | [Claude Usage](https://github.com/nicholaspsmith/claude-usage-menubar) | Claude Code plan limits, resets, and live agent sessions |
 | [Apollo Monitor](https://github.com/nicholaspsmith/apollo-monitor-menubar) | Universal Audio Apollo monitor level, plus a UA process watchdog |
 | [Battery Time](https://github.com/nicholaspsmith/battery-time-menubar) | Time remaining, power mode, and 24h usage |
-| [VPN & DNS](https://github.com/nicholaspsmith/vpn-dns-menubar) | One dot for Mullvad + Tailscale state, with a DNS watcher |
+| [VPN & DNS](https://github.com/nicholaspsmith/vpn-dns-menubar) | A chameleon for Mullvad + Tailscale state, with a DNS watcher |
 | [Process Monitor](https://github.com/nicholaspsmith/MacOS_Process_Monitor) | Process-count sparkline against the per-UID limit |
 | [KeyLight](https://github.com/nicholaspsmith/keylight-menubar) | Ctrl+brightness keys remapped to keyboard backlight |
 | **MacRecorder** | Screen recording with system audio |
