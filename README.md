@@ -18,7 +18,8 @@ menu-bar shell) and [HotkeyKit](https://github.com/nicholaspsmith/HotkeyKit)
 
 ![The menu-bar icon](docs/menubar-icon.png)
 
-A camcorder; its record light comes on while a recording is running. Prefer the
+A camcorder with a face: one big lens for an eye, a viewfinder for a hat, and
+the record light on top that comes on while a recording is running. Prefer the
 plain record-dot symbol? **menu ▸ Icon ▸ Symbol**.
 
 ## What it does
