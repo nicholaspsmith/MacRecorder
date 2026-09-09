@@ -23,7 +23,8 @@ final class RecorderStatusItem: NSObject {
         if let button = statusItem.button {
             button.target = self
             button.action = #selector(handleClick)
-            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+            // Mouse down, so a popped menu tracks the press to its release like a native status menu.
+            button.sendAction(on: [.leftMouseDown, .rightMouseDown])
         }
         render()
     }
@@ -50,7 +51,7 @@ final class RecorderStatusItem: NSObject {
 
     @objc private func handleClick() {
         let event = NSApp.currentEvent
-        let isSecondary = event?.type == .rightMouseUp
+        let isSecondary = event?.type == .rightMouseDown || event?.type == .rightMouseUp
             || (event?.modifierFlags.contains(.control) ?? false)
 
         if recording && !isSecondary {
