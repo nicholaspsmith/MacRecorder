@@ -61,6 +61,19 @@ This builds `MacRecorder.app`, symlinks it into `~/Applications`, and launches
 it. Grant **Screen Recording** and **Accessibility** when prompted (each is a
 one-time grant; the menu shows a "⚠ Grant…" item until you do).
 
+### Start at Login
+
+Toggle it from the menu, or from the shell:
+
+```sh
+"$HOME/Applications/MacRecorder.app/Contents/MacOS/MacRecorder" --login on       # or: off, status
+```
+
+`install.sh` already runs this for you. Start at Login is `SMAppService.mainApp`, which can only
+register the calling process's own bundle — so nothing outside the app can turn
+it on, and the command has to be the *installed* binary. A bare `--login`, or
+`--login status`, only reports the current state and changes nothing.
+
 ## Layout
 
 - `Sources/MacRecorderCore` — pure, unit-tested logic (modes, default bindings,
