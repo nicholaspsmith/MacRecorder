@@ -1,3 +1,9 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+//
+// Copyright (c) 2026 Nicholas Smith
+
 /// The two ways MacRecorder can record, identified by their binding token.
 /// Each mode has a user-reassignable global shortcut and a menu item.
 public enum RecordingMode: String, CaseIterable, Sendable {

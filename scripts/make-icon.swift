@@ -1,4 +1,10 @@
 #!/usr/bin/env swift
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+//
+// Copyright (c) 2026 Nicholas Smith
+
 // Generates a simple placeholder app icon — a red record dot inside a white ring
 // on a dark rounded square — and writes Resources/bundle/AppIcon.icns.
 //
