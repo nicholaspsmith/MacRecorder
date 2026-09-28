@@ -18,8 +18,9 @@ menu-bar shell) and [HotkeyKit](https://github.com/nicholaspsmith/HotkeyKit)
 
 ![The menu-bar icon](docs/menubar-icon.png)
 
-A camcorder with a face: one big lens for an eye, a viewfinder for a hat, and
-the record light on top that comes on while a recording is running. Prefer the
+A blue camcorder with a face: two big eyes over the lens, a viewfinder on top,
+and a record light that glows red (with a red ring in the lens) while a
+recording is running. Idle, the light is dark and the eyes are half closed. Prefer the
 plain record-dot symbol? **menu ▸ Icon ▸ Symbol**.
 
 ## What it does
