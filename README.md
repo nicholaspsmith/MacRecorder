@@ -1,8 +1,8 @@
 # MacRecorder
 
-<p align="center"><img src="docs/mascot.png" width="160" alt="MacRecorder mascot, from the Menubarn widget library"></p>
+<p align="center"><img src="docs/mascot.png" width="160" alt="MacRecorder mascot, from Menumon"></p>
 
-<p align="center">Part of the <a href="https://widgets.nicksmith.software">Menubarn</a> widget library.</p>
+<p align="center">Part of <strong><a href="https://menumon.nicksmith.software">Menumon</a></strong>.</p>
 
 A tiny standalone macOS menu-bar app that records the screen **with system
 audio** — the one thing QuickTime's screen recording can't do — triggered by
