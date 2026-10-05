@@ -8,6 +8,10 @@ without one is refused (`[no release]` in the tip commit is the only exception).
 Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 [StatusItemKit — Releases](https://github.com/nicholaspsmith/StatusItemKit#releases-every-push-is-one).
 
+## [1.1.0] - 2026-10-05
+
+- Once a minute, while not recording, Manny focuses: his lens's iris closes in and opens again as a glint crosses the glass. His eyes stay put (he is the Unblinking Eye). He takes his turn after Lumen when several Menumon mascots are running, and sits still under Reduce Motion
+
 ## [1.0.3] - 2026-09-28
 
 - New menu-bar icon: a blue camcorder whose record light and lens glow red while recording

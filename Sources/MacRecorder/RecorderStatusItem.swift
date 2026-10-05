@@ -23,6 +23,19 @@ final class RecorderStatusItem: NSObject {
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private var recording = false
+    /// Manny's once-a-minute focus, in his turn with the other Menumon mascots:
+    /// his iris closes and opens while a glint crosses the lens. The Unblinking
+    /// Eye never blinks. Camcorder style only, and never while recording — the
+    /// record light is already saying something.
+    private var minuteCue: MinuteCue!
+    private var focus: CGFloat = 0
+    private lazy var focusAnimation = IconAnimation(duration: CharacterIcon.camcorderFocusDuration, frame: { [weak self] t in
+        self?.focus = CGFloat(t / CharacterIcon.camcorderFocusDuration)
+        self?.render()
+    }, completion: { [weak self] in
+        self?.focus = 0
+        self?.render()
+    })
 
     override init() {
         super.init()
@@ -33,6 +46,11 @@ final class RecorderStatusItem: NSObject {
             button.sendAction(on: [.leftMouseDown, .rightMouseDown])
         }
         render()
+        minuteCue = MinuteCue { [weak self] in
+            guard let self, !self.recording, IconStyle.current == .camcorder else { return }
+            self.focusAnimation.start()
+        }
+        minuteCue.start()
     }
 
     /// Camcorder mascot (red light while recording) or the plain record symbol.
@@ -52,6 +70,7 @@ final class RecorderStatusItem: NSObject {
     func setRecording(_ on: Bool) {
         guard recording != on else { return }
         recording = on
+        if on { focusAnimation.cancel(); focus = 0 }
         render()
     }
 
@@ -83,7 +102,7 @@ final class RecorderStatusItem: NSObject {
         guard let button = statusItem.button else { return }
         button.imagePosition = .imageOnly
         if IconStyle.current == .camcorder {
-            button.image = CharacterIcon.camcorder(recording: recording)
+            button.image = CharacterIcon.camcorder(recording: recording, focus: focus)
             return
         }
         if recording {
