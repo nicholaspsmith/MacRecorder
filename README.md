@@ -30,7 +30,7 @@ are half closed. **Recording:** the light glows red, with a red ring in the
 lens. **Icon ▸ Symbol** switches to the plain `record.circle` symbol, which
 becomes a solid red dot while recording.
 
-Once a minute, while idle, Manny focuses: his lens's iris closes in and opens
+Now and then, while idle, Manny focuses: his lens's iris closes in and opens
 again as a glint crosses the glass (0.9 s). He is the Unblinking Eye, so his
 eyes never move, and he holds still while recording. When several Menumon
 mascots are running they take turns, a second apart: Archimedes (Claude
