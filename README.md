@@ -108,10 +108,6 @@ swift test            # MacRecorderCore unit tests
   real artwork by dropping in a new `.icns`.
 - [`docs/superpowers/specs/2026-06-29-macrecorder-design.md`](docs/superpowers/specs/2026-06-29-macrecorder-design.md) — design spec.
 
-## Why not a SwiftBar plugin?
-
-A standalone `.app` built on [StatusItemKit](https://github.com/nicholaspsmith/StatusItemKit) needs no SwiftBar, has a real AppKit menu instead of rendered stdout, updates on events instead of a re-run timer, and keeps its place in the bar. Recording the screen with system audio uses ScreenCaptureKit, and the global ⌘⇧5 hotkey comes from HotkeyKit's `CGEventTap`; neither is reachable from a plugin script. The full comparison is in [StatusItemKit's README](https://github.com/nicholaspsmith/StatusItemKit#why-not-swiftbar).
-
 ## The menu-bar suite
 
 A suite of macOS menu-bar apps that share one framework, one build-and-sign
