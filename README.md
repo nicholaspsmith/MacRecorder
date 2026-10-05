@@ -4,6 +4,8 @@
 
 <p align="center">Part of <strong><a href="https://menumon.nicksmith.software">Menumon</a></strong>.</p>
 
+<p align="center"><img src="docs/animation.png" alt="Manny focusing his lens"></p>
+
 A standalone macOS menu-bar app that records the screen **with system audio**,
 triggered by **⌘⇧5** (the shortcut macOS normally gives the Screenshot tool).
 Recordings go **straight to `~/Downloads`**, with no preview.
