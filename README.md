@@ -1,6 +1,6 @@
 # MacRecorder
 
-<p align="center"><img src="docs/mascot.png" width="160" alt="MacRecorder mascot, from Menumon"></p>
+<p align="center"><img src="docs/mascot.png" width="160" alt="Manny, MacRecorder's menu-bar character, on its app icon"></p>
 
 <p align="center">Part of <strong><a href="https://menumon.nicksmith.software">Menumon</a></strong>.</p>
 
@@ -117,7 +117,8 @@ swift test            # MacRecorderCore unit tests
   output-path formatting).
 - `Sources/MacRecorder` — the app (recorder, region selector, status item,
   hotkeys, preferences).
-- `Resources/bundle/AppIcon.icns` — the app icon, Manny
+- `Resources/bundle/AppIcon.icns` — the app icon, Manny as the menu bar draws
+  him (also `docs/mascot.png`); redraw both with `scripts/make-icon.sh`
 - [`docs/superpowers/specs/2026-06-29-macrecorder-design.md`](docs/superpowers/specs/2026-06-29-macrecorder-design.md) — design spec.
 
 ## The menu-bar suite
