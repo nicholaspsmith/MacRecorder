@@ -27,7 +27,7 @@ engine).
 
 A blue camcorder with a face. **Idle:** the record light is dark and the eyes
 are half closed. **Recording:** the light glows red, with a red ring in the
-lens. **Icon ▸ Symbol** switches to the plain `record.circle` symbol, which
+lens. **Settings ▸ Icon ▸ Symbol** switches to the plain `record.circle` symbol, which
 becomes a solid red dot while recording.
 
 Now and then, while idle, Manny focuses: his lens's iris closes in and opens
@@ -52,17 +52,20 @@ Stop a recording by pressing the mode's shortcut again, pressing **Esc**, or
 
 - **System audio only**, captured natively by ScreenCaptureKit: no microphone,
   no BlackHole or virtual device, and you still hear audio normally.
-- Both shortcuts are **rebindable** in Preferences. Esc is fixed, and passes
+- Both shortcuts are **rebindable** in **Settings ▸ Preferences…**. Esc is fixed, and passes
   through to other apps when nothing is recording.
 
 ### The menu
 
-- **Idle:** **Record Entire Screen** and **Record Selected Area** (with their shortcuts), **⚠ Grant Screen
-  Recording…** / **⚠ Grant Accessibility…** (only until granted),
-  **Preferences…** (⌘,), **Icon** (Camcorder / Symbol), **Start at Login**,
-  **Quit MacRecorder** (⌘Q).
+- **Idle:** **Record Entire Screen** and **Record Selected Area** (with their
+  shortcuts), **⚠ Grant Screen Recording…** / **⚠ Grant Accessibility…** (only
+  until granted), **Settings ▸**, **Quit MacRecorder** (⌘Q).
+- **Settings ▸** (StatusItemKit's `SettingsMenu`): **Preferences…** (⌘,, the
+  shortcut editor), **Icon ▸** (Camcorder / Symbol), **Start at Login**, and the
+  grey version row.
 - **Recording:** left-click stops; right- or control-click opens a menu with
-  **■ Stop Recording** and **Quit MacRecorder**.
+  **■ Stop Recording**, **Settings ▸** (without Preferences…, since capturing a
+  shortcut pauses the key tap) and **Quit MacRecorder**.
 
 ## How it works
 
@@ -90,7 +93,7 @@ Grant **Screen Recording** and **Accessibility** when prompted; the menu shows a
 
 ### Start at Login (optional)
 
-Toggle it from the menu, or from the shell:
+Toggle it from **Settings ▸ Start at Login**, or from the shell:
 
 ```sh
 "$HOME/Applications/MacRecorder.app/Contents/MacOS/MacRecorder" --login on       # or: off, status

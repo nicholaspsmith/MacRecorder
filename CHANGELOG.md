@@ -8,6 +8,11 @@ without one is refused (`[no release]` in the tip commit is the only exception).
 Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 [StatusItemKit — Releases](https://github.com/nicholaspsmith/StatusItemKit#releases-every-push-is-one).
 
+## [1.3.0] - 2026-10-05
+
+- New **Settings** submenu at the foot of the menu, the same one every Menumon app has: Preferences…, Icon and Start at Login now live there, with the version number at the bottom
+- **Quit MacRecorder** stays at the top level, right below Settings, while idle and while recording
+
 ## [1.2.0] - 2026-10-05
 
 - A real app icon: Manny, the camcorder from the menu bar, instead of a plain red record dot

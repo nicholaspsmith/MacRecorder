@@ -167,30 +167,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Menu
 
     private func buildMenu(_ menu: NSMenu) {
-        if state == .recording {
+        let recording = state == .recording
+        if recording {
             menu.addItem(actionItem("■ Stop Recording", #selector(menuStop)))
-            menu.addItem(.separator())
-            menu.addItem(actionItem("Quit MacRecorder", #selector(quit), key: "q"))
-            return
+        } else {
+            for mode in RecordingMode.allCases {
+                let shortcut = trigger(for: mode).map { "    " + TriggerFormatter.string($0) } ?? ""
+                let selector = (mode == .fullScreen) ? #selector(menuRecordFull) : #selector(menuRecordRegion)
+                menu.addItem(actionItem(mode.label + shortcut, selector))
+            }
+
+            var warnings: [NSMenuItem] = []
+            if !CGPreflightScreenCaptureAccess() {
+                warnings.append(actionItem("⚠ Grant Screen Recording…", #selector(grantScreenRecording)))
+            }
+            if !(tap?.isTrusted ?? false) {
+                warnings.append(actionItem("⚠ Grant Accessibility…", #selector(grantAccessibility)))
+            }
+            if !warnings.isEmpty {
+                menu.addItem(.separator())
+                warnings.forEach(menu.addItem)
+            }
         }
 
-        for mode in RecordingMode.allCases {
-            let shortcut = trigger(for: mode).map { "    " + TriggerFormatter.string($0) } ?? ""
-            let selector = (mode == .fullScreen) ? #selector(menuRecordFull) : #selector(menuRecordRegion)
-            menu.addItem(actionItem(mode.label + shortcut, selector))
-        }
+        // The menu is rebuilt on every open, so these states are always current.
+        SettingsMenu.addFooter(to: menu, appName: "MacRecorder", items: { [self] submenu in
+            // Shortcut capture pauses the key tap, so keep it out of reach mid-recording.
+            if !recording {
+                submenu.addItem(actionItem("Preferences…", #selector(openPrefs), key: ","))
+                submenu.addItem(.separator())
+            }
+            submenu.addItem(iconStyleItem())
+        })
+    }
 
-        menu.addItem(.separator())
-
-        if !CGPreflightScreenCaptureAccess() {
-            menu.addItem(actionItem("⚠ Grant Screen Recording…", #selector(grantScreenRecording)))
-        }
-        if !(tap?.isTrusted ?? false) {
-            menu.addItem(actionItem("⚠ Grant Accessibility…", #selector(grantAccessibility)))
-        }
-
-        menu.addItem(actionItem("Preferences…", #selector(openPrefs), key: ","))
-
+    /// MacRecorder's own icon picker: the camcorder mascot or the plain record symbol.
+    private func iconStyleItem() -> NSMenuItem {
         let iconHeader = NSMenuItem(title: "Icon", action: nil, keyEquivalent: "")
         let iconSub = NSMenu()
         for style in RecorderStatusItem.IconStyle.allCases {
@@ -201,14 +213,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             iconSub.addItem(item)
         }
         iconHeader.submenu = iconSub
-        menu.addItem(iconHeader)
-
-        let login = actionItem("Start at Login", #selector(toggleLogin))
-        login.state = LoginItem.isEnabled ? .on : .off
-        menu.addItem(login)
-
-        menu.addItem(.separator())
-        menu.addItem(actionItem("Quit MacRecorder", #selector(quit), key: "q"))
+        return iconHeader
     }
 
     private func trigger(for mode: RecordingMode) -> Trigger? {
@@ -246,7 +251,4 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         RecorderStatusItem.IconStyle.current = style
         statusItem.refresh()
     }
-
-    @objc private func toggleLogin() { LoginItem.toggle() }
-    @objc private func quit() { NSApp.terminate(nil) }
 }
