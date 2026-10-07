@@ -24,11 +24,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusItem: RecorderStatusItem!
     private let model = BindingsModel()
+    private let saveLocation = SaveLocation()
     private let recorder = Recorder()
     private let regionSelector = RegionSelector()
     private var tap: HotkeyTap!
     private var trustTimer: Timer?
     private var state: State = .idle
+    /// The in-flight `recorder.start`. Stopping waits for it, so a shortcut
+    /// pressed before ScreenCaptureKit has finished starting still stops and
+    /// saves instead of leaving an orphaned capture running.
+    private var startTask: Task<Void, Never>?
     private var prefs: PreferencesWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -108,8 +113,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         state = .recording
         statusItem.setRecording(true)
         let scale = NSScreen.backingScale(for: displayID)
-        let url = OutputPath.downloadsURL(for: Date())
-        Task { [weak self] in
+        let url = OutputPath.url(for: Date(), in: saveLocation.directory)
+        startTask = Task { [weak self] in
             guard let self else { return }
             do {
                 try await self.recorder.start(
@@ -125,8 +130,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard state == .recording else { return }
         state = .idle
         statusItem.setRecording(false)
+        let pendingStart = startTask
+        startTask = nil
         Task { [weak self] in
             guard let self else { return }
+            await pendingStart?.value
             let url = await self.recorder.stop()
             if let url { await MainActor.run { self.announceSaved(url) } }
         }
@@ -143,7 +151,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func announceSaved(_ url: URL) {
-        // Saved straight to ~/Downloads with no preview; just log the path.
+        // Saved straight to the save folder with no preview; just log the path.
         NSLog("MacRecorder: saved \(url.path)")
     }
 
@@ -238,6 +246,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if prefs == nil {
             prefs = PreferencesWindowController(
                 model: model,
+                saveLocation: saveLocation,
                 // Pause the tap during shortcut capture so the current ⌘⇧5 is
                 // recorded rather than starting a real recording; resume after.
                 pauseTap: { [weak self] in self?.tap.stop() },

@@ -33,4 +33,24 @@ final class OutputPathTests: XCTestCase {
         XCTAssertEqual(url.lastPathComponent, OutputPath.filename(for: date, timeZone: utc))
         XCTAssertEqual(url.deletingLastPathComponent().lastPathComponent, "Downloads")
     }
+
+    func testURLUsesTheChosenFolder() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let date = Date(timeIntervalSince1970: 0)
+        let url = OutputPath.url(for: date, in: dir, timeZone: utc)
+        XCTAssertEqual(url.deletingLastPathComponent().standardizedFileURL.path, dir.standardizedFileURL.path)
+        XCTAssertEqual(url.lastPathComponent, OutputPath.filename(for: date, timeZone: utc))
+    }
+
+    func testURLFallsBackToDownloadsWhenTheFolderIsGone() {
+        let missing = URL(fileURLWithPath: "/nonexistent-\(UUID().uuidString)", isDirectory: true)
+        let date = Date(timeIntervalSince1970: 0)
+        XCTAssertEqual(
+            OutputPath.url(for: date, in: missing, timeZone: utc),
+            OutputPath.downloadsURL(for: date, timeZone: utc)
+        )
+    }
 }

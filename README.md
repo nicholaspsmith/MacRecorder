@@ -8,7 +8,7 @@
 
 A standalone macOS menu-bar app that records the screen **with system audio**,
 triggered by **⌘⇧5** (the shortcut macOS normally gives the Screenshot tool).
-Recordings go **straight to `~/Downloads`**, with no preview.
+Recordings go **straight to `~/Downloads`** (or a folder you choose), with no preview.
 
 Built on [StatusItemKit](https://github.com/nicholaspsmith/StatusItemKit) and
 [HotkeyKit](https://github.com/nicholaspsmith/HotkeyKit) (the global key-tap
@@ -46,9 +46,11 @@ that are running. Skipped when Reduce Motion is on.
 | `⌘⇧5` | Start/stop recording the **whole main display** |
 | `⌘⇧6` | Start a **drag-to-select region** recording (Esc cancels the picker) |
 
-Stop a recording by pressing the mode's shortcut again, pressing **Esc**, or
-**left-clicking the menu-bar icon**. The `.mov` is saved to `~/Downloads` as
-`Screen Recording YYYY-MM-DD at HH.MM.SS.mov`.
+Stop and save a recording by pressing **either shortcut** again, pressing
+**Esc**, or **left-clicking the menu-bar icon**. The `.mov` is saved to
+`~/Downloads` as `Screen Recording YYYY-MM-DD at HH.MM.SS.mov`; pick a different
+folder under **Settings ▸ Preferences… ▸ Save Location** (if that folder is
+missing when you record, the file goes to `~/Downloads`).
 
 - **System audio only**, captured natively by ScreenCaptureKit: no microphone,
   no BlackHole or virtual device, and you still hear audio normally.

@@ -20,13 +20,28 @@ public enum OutputPath {
         return "Screen Recording \(formatter.string(from: date)).mov"
     }
 
-    /// Destination URL in the user's Downloads directory. Falls back to
-    /// ~/Downloads if the system directory lookup ever fails.
-    public static func downloadsURL(for date: Date, timeZone: TimeZone = .current) -> URL {
-        let downloads = FileManager.default
+    /// The user's Downloads directory, the default save location. Falls back
+    /// to ~/Downloads if the system directory lookup ever fails.
+    public static var downloadsDirectory: URL {
+        FileManager.default
             .urls(for: .downloadsDirectory, in: .userDomainMask).first
             ?? FileManager.default.homeDirectoryForCurrentUser
                 .appendingPathComponent("Downloads", isDirectory: true)
-        return downloads.appendingPathComponent(filename(for: date, timeZone: timeZone))
+    }
+
+    /// Destination URL in the user's Downloads directory.
+    public static func downloadsURL(for date: Date, timeZone: TimeZone = .current) -> URL {
+        url(for: date, in: nil, timeZone: timeZone)
+    }
+
+    /// Destination URL in `directory`, the user's chosen save location. Falls
+    /// back to Downloads when none is set or the folder no longer exists (an
+    /// unplugged drive, a deleted folder), so a recording is never lost.
+    public static func url(for date: Date, in directory: URL?, timeZone: TimeZone = .current) -> URL {
+        var isDir: ObjCBool = false
+        let folder = directory.flatMap {
+            FileManager.default.fileExists(atPath: $0.path, isDirectory: &isDir) && isDir.boolValue ? $0 : nil
+        } ?? downloadsDirectory
+        return folder.appendingPathComponent(filename(for: date, timeZone: timeZone))
     }
 }
