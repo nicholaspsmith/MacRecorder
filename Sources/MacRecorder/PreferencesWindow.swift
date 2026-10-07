@@ -40,10 +40,12 @@ final class RecorderModel: ObservableObject {
     }
 }
 
-/// One row per recording mode: label, current shortcut, Record + Reset.
+/// One row per recording mode (label, current shortcut, Record + Reset), then
+/// the folder recordings are saved to.
 struct PreferencesView: View {
     @ObservedObject var model: BindingsModel
     @ObservedObject var recorder: RecorderModel
+    @ObservedObject var saveLocation: SaveLocation
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -70,8 +72,27 @@ struct PreferencesView: View {
             }
 
             Divider()
-            Text("Stop a recording any time with the same shortcut, Esc, or a "
-                 + "left-click on the menu-bar dot. Recordings save to ~/Downloads.")
+            Text("Save Location")
+                .font(.headline)
+
+            HStack(spacing: 10) {
+                Image(nsImage: NSWorkspace.shared.icon(forFile: saveLocation.effectiveDirectory.path))
+                    .resizable()
+                    .frame(width: 16, height: 16)
+                Text(saveLocation.displayPath)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .help(saveLocation.effectiveDirectory.path)
+                Spacer()
+                Button("Choose…") { saveLocation.choose() }
+                Button("Reset") { saveLocation.reset() }
+                    .disabled(!saveLocation.isCustom)
+            }
+
+            Divider()
+            Text("Stop and save a recording any time by pressing either shortcut "
+                 + "again, Esc, or a left-click on the menu-bar dot. If the save "
+                 + "folder is missing when a recording starts, it goes to ~/Downloads.")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -90,10 +111,12 @@ struct PreferencesView: View {
 final class PreferencesWindowController: NSObject, NSWindowDelegate {
     private var window: NSWindow?
     private let model: BindingsModel
+    private let saveLocation: SaveLocation
     private let recorderModel = RecorderModel()
 
-    init(model: BindingsModel, pauseTap: @escaping () -> Void, resumeTap: @escaping () -> Void) {
+    init(model: BindingsModel, saveLocation: SaveLocation, pauseTap: @escaping () -> Void, resumeTap: @escaping () -> Void) {
         self.model = model
+        self.saveLocation = saveLocation
         super.init()
         recorderModel.onCaptureStart = pauseTap
         recorderModel.onCaptureEnd = resumeTap
@@ -101,7 +124,7 @@ final class PreferencesWindowController: NSObject, NSWindowDelegate {
 
     func show() {
         if window == nil {
-            let host = NSHostingController(rootView: PreferencesView(model: model, recorder: recorderModel))
+            let host = NSHostingController(rootView: PreferencesView(model: model, recorder: recorderModel, saveLocation: saveLocation))
             let win = NSWindow(contentViewController: host)
             win.title = "MacRecorder Preferences"
             win.styleMask = [.titled, .closable]

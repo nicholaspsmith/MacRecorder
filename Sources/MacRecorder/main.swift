@@ -8,7 +8,7 @@ import AppKit
 import StatusItemKit
 
 // MacRecorder — a standalone menu-bar app that records the screen with system
-// audio (no mic), triggered by ⌘⇧5, saving straight to ~/Downloads.
+// audio (no mic), triggered by ⌘⇧5, saving straight to ~/Downloads (or the folder chosen in Preferences).
 // Handle `--login on|off|status` and exit before any UI exists. Start at Login is
 // SMAppService.mainApp, which can only register the calling process's own bundle,
 // so this is the only way an installer or script can turn it on.
