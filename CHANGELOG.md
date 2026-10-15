@@ -10,7 +10,8 @@ Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 
 ## [1.9.0] - 2026-10-15
 
-- No user-visible changes.
+- Carol's headband no longer gets cut off at the top of the menu bar icon, and her head movement is now smoother and stays within the icon's boundaries.
+- Carol's walking animation is now more responsive to her speed, with smoother transitions and higher frame rates for a more fluid appearance in the menu bar.
 
 ## [1.8.0] - 2026-10-15
 
