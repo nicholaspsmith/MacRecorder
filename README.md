@@ -27,7 +27,7 @@ engine).
 
 A blue camcorder with a face. **Idle:** the record light is dark and the eyes
 are half closed. **Recording:** the light glows red, with a red ring in the
-lens. **Settings ▸ Icon ▸ Symbol** switches to the plain `record.circle` symbol, which
+lens. **Icon ▸ Symbol** switches to the plain `record.circle` symbol, which
 becomes a solid red dot while recording.
 
 Now and then, while idle, Manny focuses: his lens's iris closes in and opens
@@ -61,13 +61,13 @@ missing when you record, the file goes to `~/Downloads`).
 
 - **Idle:** **Record Entire Screen** and **Record Selected Area** (with their
   shortcuts), **⚠ Grant Screen Recording…** / **⚠ Grant Accessibility…** (only
-  until granted), **Settings ▸**, **Quit MacRecorder** (⌘Q).
+  until granted), **Settings ▸**, **Icon ▸** (Camcorder / Symbol), **Quit
+  MacRecorder** (⌘Q).
 - **Settings ▸** (StatusItemKit's `SettingsMenu`): **Preferences…** (⌘,, the
-  shortcut editor), **Icon ▸** (Camcorder / Symbol), **Start at Login**, and the
-  grey version row.
+  shortcut editor), **Start at Login**, and the grey version row.
 - **Recording:** left-click stops; right- or control-click opens a menu with
   **■ Stop Recording**, **Settings ▸** (without Preferences…, since capturing a
-  shortcut pauses the key tap) and **Quit MacRecorder**.
+  shortcut pauses the key tap), **Icon ▸** and **Quit MacRecorder**.
 
 ## How it works
 
