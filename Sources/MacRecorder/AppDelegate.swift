@@ -203,9 +203,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Shortcut capture pauses the key tap, so keep it out of reach mid-recording.
             if !recording {
                 submenu.addItem(actionItem("Preferences…", #selector(openPrefs), key: ","))
-                submenu.addItem(.separator())
             }
-            submenu.addItem(iconStyleItem())
+        }, belowSettings: { [self] menu in
+            // Icon sits in the main menu, right below Settings.
+            menu.addItem(iconStyleItem())
         })
     }
 
