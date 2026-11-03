@@ -8,9 +8,9 @@ import AppKit
 import StatusItemKit
 
 /// Owns the menu-bar item. Two interaction states:
-///   • idle — any click opens the menu (record options, Settings, Quit).
+///   • idle — any click opens the menu (record options, Preferences…, Quit).
 ///   • recording — a left-click stops immediately (red dot); a right- or
-///     control-click still opens the menu (so Stop, Settings and Quit stay reachable).
+///     control-click still opens the menu (so Stop, Preferences… and Quit stay reachable).
 ///
 /// This is a bespoke status item rather than StatusItemKit's menu-only
 /// `StatusItemController` because that two-state click behavior needs direct

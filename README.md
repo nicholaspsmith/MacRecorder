@@ -27,8 +27,8 @@ engine).
 
 A blue camcorder with a face. **Idle:** the record light is dark and the eyes
 are half closed. **Recording:** the light glows red, with a red ring in the
-lens. **Icon ▸ Symbol** switches to the plain `record.circle` symbol, which
-becomes a solid red dot while recording.
+lens. **Preferences… ▸ Menu Bar Icon ▸ Symbol** switches to the plain
+`record.circle` symbol, which becomes a solid red dot while recording.
 
 Now and then, while idle, Manny focuses: his lens's iris closes in and opens
 again as a glint crosses the glass (0.9 s). He is the Unblinking Eye, so his
@@ -49,25 +49,38 @@ that are running. Skipped when Reduce Motion is on.
 Stop and save a recording by pressing **either shortcut** again, pressing
 **Esc**, or **left-clicking the menu-bar icon**. The `.mov` is saved to
 `~/Downloads` as `Screen Recording YYYY-MM-DD at HH.MM.SS.mov`; pick a different
-folder under **Settings ▸ Preferences… ▸ Save Location** (if that folder is
+folder under **Preferences… ▸ Save Location** (if that folder is
 missing when you record, the file goes to `~/Downloads`).
 
 - **System audio only**, captured natively by ScreenCaptureKit: no microphone,
   no BlackHole or virtual device, and you still hear audio normally.
-- Both shortcuts are **rebindable** in **Settings ▸ Preferences…**. Esc is fixed, and passes
+- Both shortcuts are **rebindable** in **Preferences…**. Esc is fixed, and passes
   through to other apps when nothing is recording.
 
 ### The menu
 
 - **Idle:** **Record Entire Screen** and **Record Selected Area** (with their
   shortcuts), **⚠ Grant Screen Recording…** / **⚠ Grant Accessibility…** (only
-  until granted), **Settings ▸**, **Icon ▸** (Camcorder / Symbol), **Quit
-  MacRecorder** (⌘Q).
-- **Settings ▸** (StatusItemKit's `SettingsMenu`): **Preferences…** (⌘,, the
-  shortcut editor), **Start at Login**, and the grey version row.
+  until granted), then **Preferences…** (⌘,) and **Quit MacRecorder** (⌘Q).
 - **Recording:** left-click stops; right- or control-click opens a menu with
-  **■ Stop Recording**, **Settings ▸** (without Preferences…, since capturing a
-  shortcut pauses the key tap), **Icon ▸** and **Quit MacRecorder**.
+  **■ Stop Recording**, **Preferences…** and **Quit MacRecorder**.
+- Every row in this menu starts or stops a recording or opens a window or a
+  dialog, so each one closes the menu (a full-screen recording would otherwise
+  capture the open menu). The options live in the Preferences window.
+
+### Preferences
+
+**Preferences…** (⌘,) opens **MacRecorder Preferences**, the window every
+Menumon app shares (StatusItemKit's `PreferencesPane` and `PreferencesForm`;
+Esc or ⌘W closes it):
+
+- **General:** **Start at Login**, and **Menu Bar Icon**, tiles for Camcorder
+  and Symbol drawn as they look in the bar.
+- **Recording Shortcuts:** each mode's shortcut with **Record** and **Reset**.
+  While a recording runs the Record buttons are off, since capturing a shortcut
+  pauses the key tap that stops it.
+- **Save Location:** the folder, with **Choose…** and **Reset**.
+- The version, centred in grey at the foot.
 
 ## How it works
 
@@ -80,7 +93,8 @@ missing when you record, the file goes to `~/Downloads`).
 - **RecorderStatusItem** owns its own `NSStatusItem` instead of StatusItemKit's
   `StatusItemController`, because it needs a left-click to stop while recording.
   StatusItemKit still provides the icon drawing (`CharacterIcon.camcorder`,
-  `MeterIcon`) and Start at Login (`SMAppService`). It does not run a
+  `MeterIcon`), the Preferences window and menu foot, and Start at Login
+  (`SMAppService`). It does not run a
   `YieldClient`.
 
 ## Install
@@ -95,7 +109,7 @@ Grant **Screen Recording** and **Accessibility** when prompted; the menu shows a
 
 ### Start at Login (optional)
 
-Toggle it from **Settings ▸ Start at Login**, or from the shell:
+Toggle it from **Preferences… ▸ General ▸ Start at Login**, or from the shell:
 
 ```sh
 "$HOME/Applications/MacRecorder.app/Contents/MacOS/MacRecorder" --login on       # or: off, status

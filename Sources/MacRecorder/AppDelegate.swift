@@ -29,12 +29,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let regionSelector = RegionSelector()
     private var tap: HotkeyTap!
     private var trustTimer: Timer?
-    private var state: State = .idle
+    private var state: State = .idle {
+        didSet { recorderModel.screenRecording = state == .recording }
+    }
     /// The in-flight `recorder.start`. Stopping waits for it, so a shortcut
     /// pressed before ScreenCaptureKit has finished starting still stops and
     /// saves instead of leaving an orphaned capture running.
     private var startTask: Task<Void, Never>?
-    private var prefs: PreferencesWindowController?
+    /// Shortcut capture in Preferences. It pauses the key tap so the current
+    /// ⌘⇧5 is recorded rather than starting a real recording, and resumes it after.
+    private lazy var recorderModel: RecorderModel = {
+        let m = RecorderModel()
+        m.onCaptureStart = { [weak self] in self?.tap.stop() }
+        m.onCaptureEnd = { [weak self] in self?.startTapIfPossible() }
+        return m
+    }()
+    private lazy var prefs: PreferencesPane = {
+        let pane = PreferencesPane(appName: "MacRecorder") { [unowned self] in
+            PreferencesView(model: self.model, recorder: self.recorderModel, saveLocation: self.saveLocation,
+                            onIconChange: { [weak self] in self?.statusItem.refresh() })
+        }
+        // Closing mid-capture would otherwise leave the key tap paused.
+        pane.onClose = { [weak self] in self?.recorderModel.cancel() }
+        return pane
+    }()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = RecorderStatusItem()
@@ -110,6 +128,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func beginRecording(displayID: CGDirectDisplayID, cropRect: CGRect?) {
+        // A shortcut capture left pending in Preferences has the tap paused;
+        // resume it, or the shortcuts and Esc couldn't stop this recording.
+        recorderModel.cancel()
         state = .recording
         statusItem.setRecording(true)
         let scale = NSScreen.backingScale(for: displayID)
@@ -175,16 +196,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Menu
 
     private func buildMenu(_ menu: NSMenu) {
-        let recording = state == .recording
-        if recording {
-            menu.addItem(actionItem("■ Stop Recording", #selector(menuStop)))
+        // Every row here starts or stops a recording, or opens a window or a
+        // dialog, so each closes the menu: a full-screen recording would
+        // capture the open menu, and a region pick needs the whole screen.
+        // These recording actions stay out of KeepOpenMenu by hand; it already
+        // leaves "…" items and Quit alone. The options (icon, Start at Login)
+        // live in the Preferences window.
+        var recordingActions: [NSMenuItem] = []
+        if state == .recording {
+            recordingActions.append(actionItem("■ Stop Recording", #selector(menuStop)))
         } else {
             for mode in RecordingMode.allCases {
                 let shortcut = trigger(for: mode).map { "    " + TriggerFormatter.string($0) } ?? ""
                 let selector = (mode == .fullScreen) ? #selector(menuRecordFull) : #selector(menuRecordRegion)
-                menu.addItem(actionItem(mode.label + shortcut, selector))
+                recordingActions.append(actionItem(mode.label + shortcut, selector))
             }
+        }
+        recordingActions.forEach(menu.addItem)
 
+        if state != .recording {
             var warnings: [NSMenuItem] = []
             if !CGPreflightScreenCaptureAccess() {
                 warnings.append(actionItem("⚠ Grant Screen Recording…", #selector(grantScreenRecording)))
@@ -198,39 +228,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        // The menu is rebuilt on every open, so these states are always current.
-        SettingsMenu.addFooter(to: menu, appName: "MacRecorder", items: { [self] submenu in
-            // Shortcut capture pauses the key tap, so keep it out of reach mid-recording.
-            if !recording {
-                submenu.addItem(actionItem("Preferences…", #selector(openPrefs), key: ","))
-            }
-        }, belowSettings: { [self] menu in
-            // Icon sits in the main menu, right below Settings.
-            menu.addItem(iconStyleItem())
-        })
-    }
-
-    /// MacRecorder's own icon picker: the camcorder mascot or the plain record symbol.
-    private func iconStyleItem() -> NSMenuItem {
-        let iconHeader = NSMenuItem(title: "Icon", action: nil, keyEquivalent: "")
-        let iconSub = NSMenu()
-        for style in RecorderStatusItem.IconStyle.allCases {
-            let item = NSMenuItem(title: style.title, action: #selector(pickIconStyle(_:)), keyEquivalent: "")
-            item.target = self
-            item.representedObject = style.rawValue
-            item.state = style == RecorderStatusItem.IconStyle.current ? .on : .off
-            iconSub.addItem(item)
-        }
-        iconHeader.submenu = iconSub
-        return iconHeader
+        // Always offered, even mid-recording: the window turns its Record
+        // buttons off then, since capturing a shortcut pauses the key tap.
+        PreferencesMenu.addFooter(to: menu, appName: "MacRecorder") { [weak self] in self?.prefs.show() }
+        KeepOpenMenu.apply(to: menu.items.filter { item in !recordingActions.contains { $0 === item } })
     }
 
     private func trigger(for mode: RecordingMode) -> Trigger? {
         model.bindings.first { $0.token == mode.token }?.trigger
     }
 
-    private func actionItem(_ title: String, _ selector: Selector, key: String = "") -> NSMenuItem {
-        let item = NSMenuItem(title: title, action: selector, keyEquivalent: key)
+    private func actionItem(_ title: String, _ selector: Selector) -> NSMenuItem {
+        let item = NSMenuItem(title: title, action: selector, keyEquivalent: "")
         item.target = self
         return item
     }
@@ -242,23 +251,4 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func menuRecordRegion() { if state == .idle { startRegion() } }
     @objc private func grantScreenRecording() { CGRequestScreenCaptureAccess() }
     @objc private func grantAccessibility() { tap.requestTrust(); startTapIfPossible() }
-
-    @objc private func openPrefs() {
-        if prefs == nil {
-            prefs = PreferencesWindowController(
-                model: model,
-                saveLocation: saveLocation,
-                // Pause the tap during shortcut capture so the current ⌘⇧5 is
-                // recorded rather than starting a real recording; resume after.
-                pauseTap: { [weak self] in self?.tap.stop() },
-                resumeTap: { [weak self] in self?.startTapIfPossible() }
-            )
-        }
-        prefs?.show()
-    }
-    @objc private func pickIconStyle(_ sender: NSMenuItem) {
-        guard let raw = sender.representedObject as? String, let style = RecorderStatusItem.IconStyle(rawValue: raw) else { return }
-        RecorderStatusItem.IconStyle.current = style
-        statusItem.refresh()
-    }
 }
