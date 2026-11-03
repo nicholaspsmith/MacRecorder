@@ -8,6 +8,12 @@ without one is refused (`[no release]` in the tip commit is the only exception).
 Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 [StatusItemKit — Releases](https://github.com/nicholaspsmith/StatusItemKit#releases-every-push-is-one).
 
+## [1.18.0] - 2026-11-03
+
+- Preferences are now accessed via a dedicated window (⌘,) instead of a submenu, featuring grouped settings, a login toggle, and an icon picker.
+- Menus can now stay open after selecting an option, and sections can be collapsed to hide rows.
+- Read-only information rows in menus are now displayed in grey text.
+
 ## [1.17.0] - 2026-11-03
 
 - Settings move into a **MacRecorder Preferences** window (menu ▸ Preferences…, ⌘,), laid out like Mac Daddy's and the other Menumon apps': General (Start at Login, and the menu-bar icon as Camcorder and Symbol tiles), Recording Shortcuts, Save Location, and the version at the foot. Esc or ⌘W closes it.
