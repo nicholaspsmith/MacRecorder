@@ -8,6 +8,15 @@ without one is refused (`[no release]` in the tip commit is the only exception).
 Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 [StatusItemKit — Releases](https://github.com/nicholaspsmith/StatusItemKit#releases-every-push-is-one).
 
+## [1.18.0] - 2026-11-03
+
+- The status dot in the keep-open menu now aligns with other items instead of being pushed to the right.
+- Long menu rows with status dots are no longer clipped at the end.
+- The Settings submenu has been replaced by a standard Preferences window (⌘,) with a grouped form layout.
+- Selecting an option in the keep-open menu no longer closes the menu, allowing for easier selection.
+- Menu sections can now be folded away using a chevron heading.
+- Read-only menu rows are now displayed in grey text.
+
 ## [1.17.0] - 2026-11-03
 
 - Settings move into a **MacRecorder Preferences** window (menu ▸ Preferences…, ⌘,), laid out like Mac Daddy's and the other Menumon apps': General (Start at Login, and the menu-bar icon as Camcorder and Symbol tiles), Recording Shortcuts, Save Location, and the version at the foot. Esc or ⌘W closes it.
