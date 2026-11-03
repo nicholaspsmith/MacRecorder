@@ -7,6 +7,7 @@
 import AppKit
 import HotkeyKit
 import MacRecorderCore
+import StatusItemKit
 import SwiftUI
 
 /// Drives a `TriggerRecorder` and tracks which token is currently recording so
@@ -15,6 +16,10 @@ import SwiftUI
 /// an actual recording.
 final class RecorderModel: ObservableObject {
     @Published var recordingToken: String?
+    /// Whether a screen recording is running. Capturing a shortcut pauses the
+    /// key tap, which would take away the shortcuts and Esc that stop it, so
+    /// the Record buttons are off meanwhile.
+    @Published var screenRecording = false
     private let recorder = TriggerRecorder()
 
     /// Wired by the app to stop/start the global HotkeyTap around capture.
@@ -22,6 +27,7 @@ final class RecorderModel: ObservableObject {
     var onCaptureEnd: (() -> Void)?
 
     func record(token: String, apply: @escaping (Trigger) -> Void) {
+        guard !screenRecording else { return }
         if recordingToken != nil { cancel() }
         recordingToken = token
         onCaptureStart?()
@@ -40,104 +46,103 @@ final class RecorderModel: ObservableObject {
     }
 }
 
-/// One row per recording mode (label, current shortcut, Record + Reset), then
-/// the folder recordings are saved to.
+/// MacRecorder Preferences (menu ▸ Preferences…, ⌘,), on StatusItemKit's shared
+/// window and form: General (Start at Login, the menu-bar icon), the two
+/// recording shortcuts, then the save folder; the version at the foot.
 struct PreferencesView: View {
     @ObservedObject var model: BindingsModel
     @ObservedObject var recorder: RecorderModel
     @ObservedObject var saveLocation: SaveLocation
+    /// Redraws the menu-bar icon after the style changes.
+    let onIconChange: () -> Void
+    @State private var icon = RecorderStatusItem.IconStyle.current
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Recording Shortcuts")
-                .font(.headline)
-
-            ForEach(model.bindings, id: \.token) { binding in
-                HStack(spacing: 10) {
-                    Text(label(for: binding.token))
-                        .frame(width: 170, alignment: .leading)
-                    Spacer()
-                    Text(TriggerFormatter.string(binding.trigger))
-                        .font(.system(.body, design: .monospaced))
-                        .foregroundColor(.secondary)
-                        .frame(minWidth: 90, alignment: .trailing)
-                    Button(recorder.recordingToken == binding.token ? "Press keys…" : "Record") {
-                        recorder.record(token: binding.token) { trigger in
-                            model.setOverride(token: binding.token, trigger: trigger)
-                        }
-                    }
-                    Button("Reset") { model.reset(token: binding.token) }
-                        .disabled(!model.isOverridden(binding.token))
+        PreferencesForm {
+            Section("General") {
+                StartAtLoginToggle()
+                LabeledContent("Menu Bar Icon") {
+                    IconTilePicker(Self.iconChoices, selection: Binding(get: { icon }, set: { style in
+                        icon = style
+                        RecorderStatusItem.IconStyle.current = style
+                        onIconChange()
+                    }))
                 }
             }
 
-            Divider()
-            Text("Save Location")
-                .font(.headline)
-
-            HStack(spacing: 10) {
-                Image(nsImage: NSWorkspace.shared.icon(forFile: saveLocation.effectiveDirectory.path))
-                    .resizable()
-                    .frame(width: 16, height: 16)
-                Text(saveLocation.displayPath)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                    .help(saveLocation.effectiveDirectory.path)
-                Spacer()
-                Button("Choose…") { saveLocation.choose() }
-                Button("Reset") { saveLocation.reset() }
-                    .disabled(!saveLocation.isCustom)
+            Section {
+                ForEach(model.bindings, id: \.token) { binding in
+                    LabeledContent(label(for: binding.token)) {
+                        HStack(spacing: 8) {
+                            Text(TriggerFormatter.string(binding.trigger))
+                                .monospaced()
+                                .foregroundStyle(.secondary)
+                            Button(recorder.recordingToken == binding.token ? "Press keys…" : "Record") {
+                                recorder.record(token: binding.token) { trigger in
+                                    model.setOverride(token: binding.token, trigger: trigger)
+                                }
+                            }
+                            .disabled(recorder.screenRecording)
+                            Button("Reset") { model.reset(token: binding.token) }
+                                .disabled(!model.isOverridden(binding.token))
+                        }
+                    }
+                }
+            } header: {
+                Text("Recording Shortcuts")
+            } footer: {
+                PreferencesNote(recorder.screenRecording
+                    ? "Shortcuts can't be changed while a recording is running."
+                    : "Stop and save a recording any time by pressing either shortcut again, "
+                        + "Esc, or a left-click on the menu-bar icon. Esc is fixed.")
             }
 
-            Divider()
-            Text("Stop and save a recording any time by pressing either shortcut "
-                 + "again, Esc, or a left-click on the menu-bar dot. If the save "
-                 + "folder is missing when a recording starts, it goes to ~/Downloads.")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+            Section {
+                LabeledContent("Folder") {
+                    HStack(spacing: 8) {
+                        Image(nsImage: NSWorkspace.shared.icon(forFile: saveLocation.effectiveDirectory.path))
+                            .resizable()
+                            .frame(width: 16, height: 16)
+                        Text(saveLocation.displayPath)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                            .help(saveLocation.effectiveDirectory.path)
+                        Button("Choose…") { saveLocation.choose() }
+                        Button("Reset") { saveLocation.reset() }
+                            .disabled(!saveLocation.isCustom)
+                    }
+                }
+            } header: {
+                Text("Save Location")
+            } footer: {
+                PreferencesNote("If the folder is missing when a recording starts, it goes to ~/Downloads.")
+            }
         }
-        .padding(20)
-        .frame(width: 460)
     }
 
     private func label(for token: String) -> String {
         RecordingMode(token: token)?.label ?? token
     }
-}
 
-/// Lazily creates and shows the preferences window. Pauses/resumes the global
-/// tap during shortcut capture and cancels any in-progress capture on close.
-final class PreferencesWindowController: NSObject, NSWindowDelegate {
-    private var window: NSWindow?
-    private let model: BindingsModel
-    private let saveLocation: SaveLocation
-    private let recorderModel = RecorderModel()
-
-    init(model: BindingsModel, saveLocation: SaveLocation, pauseTap: @escaping () -> Void, resumeTap: @escaping () -> Void) {
-        self.model = model
-        self.saveLocation = saveLocation
-        super.init()
-        recorderModel.onCaptureStart = pauseTap
-        recorderModel.onCaptureEnd = resumeTap
-    }
-
-    func show() {
-        if window == nil {
-            let host = NSHostingController(rootView: PreferencesView(model: model, recorder: recorderModel, saveLocation: saveLocation))
-            let win = NSWindow(contentViewController: host)
-            win.title = "MacRecorder Preferences"
-            win.styleMask = [.titled, .closable]
-            win.isReleasedWhenClosed = false
-            win.delegate = self
-            window = win
+    /// Each style as it looks in the bar while idle. The tile is always dark,
+    /// so the template symbol is drawn white rather than left to the text colour.
+    private static let iconChoices: [IconTilePicker<RecorderStatusItem.IconStyle>.Choice] =
+        RecorderStatusItem.IconStyle.allCases.map { style in
+            let image: NSImage
+            switch style {
+            case .camcorder: image = CharacterIcon.camcorder(recording: false)
+            case .symbol: image = whiteSymbol("record.circle")
+            }
+            return .init(id: style, title: style.title, image: image)
         }
-        NSApp.activate(ignoringOtherApps: true)
-        window?.center()
-        window?.makeKeyAndOrderFront(nil)
-    }
 
-    func windowWillClose(_ notification: Notification) {
-        recorderModel.cancel() // ensure the tap resumes if a capture was pending
+    private static func whiteSymbol(_ name: String) -> NSImage {
+        guard let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil) else { return NSImage() }
+        return NSImage(size: symbol.size, flipped: false) { rect in
+            symbol.draw(in: rect)
+            NSColor.white.set()
+            rect.fill(using: .sourceIn)
+            return true
+        }
     }
 }

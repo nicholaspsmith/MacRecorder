@@ -8,6 +8,13 @@ without one is refused (`[no release]` in the tip commit is the only exception).
 Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 [StatusItemKit — Releases](https://github.com/nicholaspsmith/StatusItemKit#releases-every-push-is-one).
 
+## [1.17.0] - 2026-11-03
+
+- Settings move into a **MacRecorder Preferences** window (menu ▸ Preferences…, ⌘,), laid out like Mac Daddy's and the other Menumon apps': General (Start at Login, and the menu-bar icon as Camcorder and Symbol tiles), Recording Shortcuts, Save Location, and the version at the foot. Esc or ⌘W closes it.
+- The menu now ends with Preferences… and Quit MacRecorder. The Settings and Icon submenus are gone; their options are in the window.
+- Preferences… is in the menu while recording too. The shortcut Record buttons are off until the recording stops, since capturing a shortcut pauses the keys that stop it.
+- Every row left in the menu starts or stops a recording or opens a window or dialog, so clicking one still closes the menu (a full-screen recording would otherwise capture it).
+
 ## [1.16.0] - 2026-11-02
 
 - Holding modifier keys like ⌘⌥ now works correctly for navigation keys (arrows, Home, End, Page Up, Page Down, Forward Delete, Help); the `fn` flag is no longer incorrectly included in these hotkey combinations.
