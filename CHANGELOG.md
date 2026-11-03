@@ -8,9 +8,10 @@ without one is refused (`[no release]` in the tip commit is the only exception).
 Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 [StatusItemKit — Releases](https://github.com/nicholaspsmith/StatusItemKit#releases-every-push-is-one).
 
-## [1.15.1] - 2026-11-02
+## [1.16.0] - 2026-11-02
 
-- The Apollo Monitor icon now displays the current level in grey when it cannot be adjusted (e.g., due to missing permissions or connectivity issues), instead of appearing dark.
+- Holding modifier keys like ⌘⌥ now works correctly for navigation keys (arrows, Home, End, Page Up, Page Down, Forward Delete, Help); the `fn` flag is no longer incorrectly included in these hotkey combinations.
+- The Apollo Monitor icon in the menu bar now displays the current level in grey when Accessibility permissions are not granted or the engine is unreachable, instead of going dark, so you can still see the level while it is unchangeable.
 
 ## [1.15.0] - 2026-11-02
 
