@@ -10,11 +10,12 @@ Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 
 ## [1.18.0] - 2026-11-03
 
-- The Preferences window now follows the standard Menumon layout, including a version number at the bottom and a Start at Login toggle.
-- Selecting an option in a menu that stays open (such as recording settings) no longer closes the menu, allowing you to make multiple selections without reopening it.
-- Menu sections can now be collapsed and expanded using a chevron icon to hide or show their contents.
-- Read-only information rows in the menu are now always displayed in grey text, even when the menu is opened dynamically.
-- Menu items with icons and long titles are no longer clipped at the end, ensuring the full text and image are visible.
+- The status dot in the keep-open menu now aligns with other items instead of being pushed to the right.
+- Long menu rows with status dots are no longer clipped at the end.
+- The Settings submenu has been replaced by a standard Preferences window (⌘,) with a grouped form layout.
+- Selecting an option in the keep-open menu no longer closes the menu, allowing for easier selection.
+- Menu sections can now be folded away using a chevron heading.
+- Read-only menu rows are now displayed in grey text.
 
 ## [1.17.0] - 2026-11-03
 
