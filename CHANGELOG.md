@@ -10,9 +10,11 @@ Versions follow [Semantic Versioning](https://semver.org/). The full rule:
 
 ## [1.18.0] - 2026-11-03
 
-- Preferences are now accessed via a dedicated window (⌘,) instead of a submenu, featuring grouped settings, a login toggle, and an icon picker.
-- Menus can now stay open after selecting an option, and sections can be collapsed to hide rows.
-- Read-only information rows in menus are now displayed in grey text.
+- The Preferences window now follows the standard Menumon layout, including a version number at the bottom and a Start at Login toggle.
+- Selecting an option in a menu that stays open (such as recording settings) no longer closes the menu, allowing you to make multiple selections without reopening it.
+- Menu sections can now be collapsed and expanded using a chevron icon to hide or show their contents.
+- Read-only information rows in the menu are now always displayed in grey text, even when the menu is opened dynamically.
+- Menu items with icons and long titles are no longer clipped at the end, ensuring the full text and image are visible.
 
 ## [1.17.0] - 2026-11-03
 
