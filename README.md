@@ -6,7 +6,7 @@
 
 <p align="center"><img src="docs/animation.png" alt="Manny focusing his lens"></p>
 
-**Version 1.18.2** · [Changelog](https://github.com/nicholaspsmith/MacRecorder/releases)
+**Version 1.19.0** · [Changelog](https://github.com/nicholaspsmith/MacRecorder/releases)
 
 A standalone macOS menu-bar app that records the screen **with system audio**,
 triggered by **⌘⇧5** (the shortcut macOS normally gives the Screenshot tool).
